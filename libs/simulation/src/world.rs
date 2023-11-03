@@ -32,12 +32,16 @@ impl World {
     self.pipe_collision(); // end of screen -x
   }
 
-  pub(crate) fn movement(&mut self, ticks: usize) {
+  pub(crate) fn decision(&mut self) {
     let closest_pos = self.next_pipe()
       .map(|p| p.position)
       .unwrap_or(na::Point2::new(1.0, 0.5));
 
-    self.bird_movement(closest_pos, ticks); // +/- y
+    self.bird_decision(closest_pos);
+  }
+
+  pub(crate) fn movement(&mut self) {
+    self.bird_movement(); // +/- y
     self.pipe_movement(); // -x
   }
 
@@ -77,17 +81,23 @@ impl World {
     self.dead_birds.extend(birds_to_move_to_dead);
   }
 
-  fn bird_movement(&mut self, closest_pos: na::Point2<f64>, ticks: usize) {
+  fn bird_decision(&mut self, closest_pos: na::Point2<f64>) {
     self.alive_birds
       .iter_mut()
-      .for_each(|bird| bird.movement(closest_pos, ticks));
+      .for_each(|bird| bird.decision(closest_pos));
+  }
+
+  fn bird_movement(&mut self) {
+    self.alive_birds
+      .iter_mut()
+      .for_each(|bird| bird.movement());
   }
 
   fn pipe_collision(&mut self) {
     self.pipes
       .iter()
       .for_each(|pipe| {
-        if pipe.position.x <= -PIPE_OFFSET_X {
+        if pipe.collision() {
           self.alive_birds
             .iter_mut()
             .for_each(|bird| {

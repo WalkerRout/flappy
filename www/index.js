@@ -30,7 +30,7 @@ viewport.style.width = "100%";
 viewport.style.height = "100%";
 // ----------------
 
-const ctx = viewport.getContext('2d');
+const ctx = viewport.getContext("2d");
 ctx.scale(viewportScale, viewportScale);
 
 function updateGenerationCount() {
@@ -39,19 +39,32 @@ function updateGenerationCount() {
   generations.innerHTML = text.replace(/(?:\r\n|\r|\n)/g, "<br>");
 }
 
-CanvasRenderingContext2D.prototype.drawBird = function(x, y, radius) {
-  this.beginPath();
-  this.arc(x, y, radius, 0, 2.0 * Math.PI);
-  this.fill();
+CanvasRenderingContext2D.prototype.drawBird = function(x, y, offx, offy) {
+  this.fillRect(x - offx, y - offy, 2*offx, 2*offy);
+  
+  this.lineWidth = 3;
+  this.strokeStyle = "purple";
+  this.strokeRect(x - offx, y - offy, 2*offx, 2*offy);
 };
 
 CanvasRenderingContext2D.prototype.drawPipe = function(x, y, offx, offy) {
   // top
-  this.fillRect(x - offx, 0, 2*offx, y - offy);
+  this.fillRect(x - offx, 0, 2.0*offx, y - offy);
   // bottom
-  this.fillRect(x - offx, y + offy, 2*offx, viewportHeight);
+  this.fillRect(x - offx, y + offy, 2.0*offx, viewportHeight);
   // middle
-  this.fillRect(x, y, 4, 4);
+  this.fillRect(x, y, 2, 2);
+
+  this.lineWidth = 10;
+  this.strokeStyle = "rgb(3, 88, 18)";
+  // top
+  this.strokeRect(x - offx, 0, 2.0*offx, y - offy);
+  // bottom
+  this.strokeRect(x - offx, y + offy, 2.0*offx, viewportHeight);
+
+  this.lineWidth = 3;
+  this.strokeStyle = "rgb(178, 247, 242)";
+  this.strokeRect(x - offx, y - offy, 2*offx, 2*offy);
 };
 
 trainButton.onclick = function() {
@@ -85,7 +98,8 @@ function redraw() {
     ctx.drawBird(
       bird.x * viewportWidth,
       viewportHeight - bird.y * viewportHeight,
-      bird.radius * viewportWidth
+      bird.offx * viewportWidth,
+      bird.offy * viewportHeight
     );
   }
 

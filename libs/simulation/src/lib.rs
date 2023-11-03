@@ -54,7 +54,7 @@ impl Simulation {
     self.tick_count += 1;
 
     self.prepare_world(ticks, rng);
-    self.step_world(ticks);
+    self.step_world();
 
     if self.world.alive_birds.is_empty() {
       self.evolve(rng);
@@ -70,7 +70,7 @@ impl Simulation {
 
   pub fn train(&mut self, rng: &mut impl RngCore) {
     loop {
-      if self.step(rng) {
+      if self.step(rng) || self.tick_count >= 20000 {
         return;
       }
     }
@@ -86,9 +86,10 @@ impl Simulation {
     }
   }
 
-  fn step_world(&mut self, ticks: usize) {
+  fn step_world(&mut self) {
     // make movements
-    self.world.movement(ticks);
+    self.world.decision();
+    self.world.movement();
   }
 
   fn evolve(&mut self, rng: &mut impl RngCore) {

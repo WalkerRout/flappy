@@ -12,7 +12,8 @@ pub struct Bird {
   pub x: f64,
   pub y: f64,
   pub dy: f64,
-  pub radius: f64,
+  pub offx: f64,
+  pub offy: f64,
   pub fitness: f64,
 }
 
@@ -22,7 +23,8 @@ impl From<&sim::Bird> for Bird {
       x: bird.position().x,
       y: bird.position().y,
       dy: bird.dy(),
-      radius: sim::BIRD_RADIUS,
+      offx: sim::BIRD_OFFSET_X,
+      offy: sim::BIRD_OFFSET_Y,
       fitness: bird.fit_distance(),
     }
   }
