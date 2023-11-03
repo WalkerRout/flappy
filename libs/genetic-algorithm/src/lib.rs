@@ -116,7 +116,9 @@ impl Statistics {
       avg_fitness: sum_fitness / (population.len() as f64)
     }
   }
+}
 
+impl Statistics {
   pub fn min_fitness(&self) -> f64 {
     self.min_fitness
   }
