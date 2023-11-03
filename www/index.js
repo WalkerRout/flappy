@@ -49,18 +49,18 @@ CanvasRenderingContext2D.prototype.drawBird = function(x, y, offx, offy) {
 
 CanvasRenderingContext2D.prototype.drawPipe = function(x, y, offx, offy) {
   // top
-  this.fillRect(x - offx, 0, 2.0*offx, y - offy);
+  this.fillRect(x - offx, 0, 2*offx, y - offy);
   // bottom
-  this.fillRect(x - offx, y + offy, 2.0*offx, viewportHeight);
+  this.fillRect(x - offx, y + offy, 2*offx, viewportHeight);
   // middle
   this.fillRect(x, y, 2, 2);
 
   this.lineWidth = 10;
   this.strokeStyle = "rgb(3, 88, 18)";
   // top
-  this.strokeRect(x - offx, 0, 2.0*offx, y - offy);
+  this.strokeRect(x - offx, 0, 2*offx, y - offy);
   // bottom
-  this.strokeRect(x - offx, y + offy, 2.0*offx, viewportHeight);
+  this.strokeRect(x - offx, y + offy, 2*offx, viewportHeight);
 
   this.lineWidth = 3;
   this.strokeStyle = "rgb(178, 247, 242)";
@@ -72,12 +72,21 @@ trainButton.onclick = function() {
   updateGenerationCount();
 }
 
+function sleepFor(sleepDuration){
+  var now = new Date().getTime();
+  while(new Date().getTime() < now + sleepDuration){ 
+    /* Do nothing */ 
+  }
+}
+
 function redraw() {
   ctx.clearRect(0, 0, viewportWidth, viewportHeight);
 
   if (simulation.step()) {
     updateGenerationCount();
   }
+
+  //sleepFor(50);
 
   ticks.innerHTML = "Ticks: " + simulation.ticks();
 
@@ -88,8 +97,8 @@ function redraw() {
     ctx.drawPipe(
       pipe.x * viewportWidth,
       viewportHeight - pipe.y * viewportHeight,
-      pipe.offset_x * viewportWidth,
-      pipe.offset_y * viewportHeight
+      pipe.offx * viewportWidth,
+      pipe.offy * viewportHeight
     );
   }
 

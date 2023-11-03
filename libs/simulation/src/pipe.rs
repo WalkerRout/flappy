@@ -1,10 +1,12 @@
 use rand::{Rng, RngCore};
 use nalgebra as na;
 
+use crate::*;
+
 pub const PIPE_DX: f64 = 0.0045;
 pub const PIPE_OFFSET_X: f64 = 0.044; // pipe/gap width = 2*PIPE_OFFSET_X
 pub const PIPE_OFFSET_Y: f64 = 0.13; // pipe gap height = 2*PIPE_OFFSET_Y
-pub const PIPE_TICK_GENERATION: usize = 170;
+pub const PIPE_TICK_GENERATION: usize = 160;
 
 #[derive(Debug, Clone)]
 pub struct Pipe {
@@ -37,20 +39,28 @@ impl Pipe {
     self.position.x += -PIPE_DX;
   }
 
-  pub(crate) fn top(&self) -> (f64, f64, f64, f64) {
-    let top = 1.0;
-    let top_safe = self.position.y + PIPE_OFFSET_Y;
-    let height = top - top_safe;
+  pub(crate) fn top_rectangle(&self) -> Rectangle {
+    let position = na::Point2::new(self.position.x - PIPE_OFFSET_X, self.position.y + PIPE_OFFSET_Y);
+    let width = 2.0 * PIPE_OFFSET_X;
+    let height = 1.0 - position.y;
 
-    (self.position.x, top_safe + height / 2.0, PIPE_OFFSET_X, height / 2.0)
+    Rectangle { 
+      position,
+      width,
+      height
+    }
   }
 
-  pub(crate) fn bot(&self) -> (f64, f64, f64, f64) {
-    let bot = 0.0;
-    let bot_safe = self.position.y - PIPE_OFFSET_Y;
-    let height = bot_safe - bot;
+  pub(crate) fn bot_rectangle(&self) -> Rectangle {
+    let position = na::Point2::new(self.position.x - PIPE_OFFSET_X, 0.0);
+    let width = 2.0 * PIPE_OFFSET_X;
+    let height = self.position.y - PIPE_OFFSET_Y;
 
-    (self.position.x, bot_safe - height / 2.0, PIPE_OFFSET_X, height / 2.0)
+    Rectangle { 
+      position,
+      width,
+      height
+    }
   }
 }
 
@@ -60,6 +70,43 @@ impl Pipe {
   }
 }
 
+pub struct Rectangle {
+  position: na::Point2<f64>, // bot left
+  width: f64,
+  height: f64,
+}
+
+impl AABB for Rectangle {
+  fn top(&self) -> f64 {
+    self.position.y + self.height
+  }
+
+  fn right(&self) -> f64 {
+    self.position.x + self.width
+  }
+
+  fn bot(&self) -> f64 {
+    self.position.y
+  }
+
+  fn left(&self) -> f64 {
+    self.position.x
+  }
+}
+
 fn clamp(x: f64, min: f64, max: f64) -> f64 {
   x.max(min).min(max)
+}
+
+#[test]
+fn test_pipe() {
+  let x = 0.9;
+  let y = 0.35;
+  let pipe = Pipe { position: na::Point2::new(x, y) };
+
+  assert_eq!(pipe.x, x);
+  assert_eq!(pipe.y, y);
+
+  assert_eq!(pipe.top(), (x, y + (1.0 - y) / 2.0, PIPE_OFFSET_X, (1.0 - y) / 2.0));
+  assert_eq!(pipe.bot(), ());
 }

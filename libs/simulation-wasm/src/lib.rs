@@ -34,8 +34,8 @@ impl From<&sim::Bird> for Bird {
 pub struct Pipe {
   pub x: f64,
   pub y: f64,
-  pub offset_x: f64,
-  pub offset_y: f64,
+  pub offx: f64,
+  pub offy: f64,
 }
 
 impl From<&sim::Pipe> for Pipe {
@@ -43,8 +43,8 @@ impl From<&sim::Pipe> for Pipe {
     Self {
       x: pipe.position().x,
       y: pipe.position().y,
-      offset_x: sim::PIPE_OFFSET_X,
-      offset_y: sim::PIPE_OFFSET_Y,
+      offx: sim::PIPE_OFFSET_X,
+      offy: sim::PIPE_OFFSET_Y,
     }
   }
 }

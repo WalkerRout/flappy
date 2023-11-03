@@ -20,6 +20,20 @@ pub use self::{
   bird_individual::*,
 };
 
+pub trait AABB {
+  fn top(&self) -> f64;
+  fn right(&self) -> f64;
+  fn bot(&self) -> f64;
+  fn left(&self) -> f64;
+
+  fn intersect<O: AABB>(&self, other: &O) -> bool {
+    self.left() < other.right()
+      && self.right() > other.left()
+      && self.bot() < other.top()
+      && self.top() > other.bot()
+  }
+}
+
 type GeneticAlgorithm = ga::GeneticAlgorithm<
   ga::RouletteWheelSelection, 
   ga::UniformCrossover, 

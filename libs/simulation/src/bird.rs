@@ -5,11 +5,8 @@ use crate::*;
 
 pub const BIRD_X: f64 = 0.15;
 
-#[deprecated]
-pub const BIRD_RADIUS: f64 = 0.017;
-
-pub const BIRD_OFFSET_X: f64 = 0.015;
-pub const BIRD_OFFSET_Y: f64 = 0.015;
+pub const BIRD_OFFSET_X: f64 = 0.012;
+pub const BIRD_OFFSET_Y: f64 = 0.012;
 
 #[derive(Debug, Clone)]
 pub struct Bird {
@@ -45,31 +42,7 @@ impl Bird {
   }
 
   pub(crate) fn collision(&self, closest_pipe: Option<&Pipe>) -> bool {
-    self.collision_screen() || self.collision_pipes(closest_pipe)
-  }
-
-  pub(crate) fn collision_screen(&self) -> bool {
-    let y = self.position.y;
-    y < BIRD_OFFSET_Y || y > 1.0 - BIRD_OFFSET_Y
-  }
-
-  pub(crate) fn collision_pipes(&self, closest_pipe: Option<&Pipe>) -> bool {    
-    if let Some(pipe) = closest_pipe {
-      self.collision_pipe(pipe.top()) || self.collision_pipe(pipe.bot())
-    } else {
-      false
-    }
-  }
-
-  pub(crate) fn collision_pipe(&self, (px, py, poffx, poffy): (f64, f64, f64, f64)) -> bool {
-    let (x, y, offx, offy) = (self.position.x, self.position.y, BIRD_OFFSET_X, BIRD_OFFSET_Y);
-
-    let x1 = f64::max(x - offx, px - poffx);
-    let y1 = f64::max(y - offy, py - poffy);
-    let x2 = f64::min(x + offx, px + poffx);
-    let y2 = f64::min(y + offy, py + poffy);
-
-    x2 - x1 > 0.0 && y2 - y1 > 0.0
+    self.collision_screen() || self.collision_pipe(closest_pipe)
   }
 
   pub(crate) fn decision(&mut self, closest_pipe: na::Point2<f64>) {
@@ -92,7 +65,24 @@ impl Bird {
 
     // add
     self.position.y += self.dy;
-    self.fit_distance = 20.0*self.passes as f64;
+    self.fit_distance = 20.0*self.passes as f64 + 0.1;
+  }
+
+  fn collision_screen(&self) -> bool {
+    let y = self.position.y;
+    y < BIRD_OFFSET_Y || y > 1.0 - BIRD_OFFSET_Y
+  }
+
+  fn collision_pipe(&self, closest_pipe: Option<&Pipe>) -> bool {    
+    if let Some(pipe) = closest_pipe {
+      self.collision_aabb(pipe.top_rectangle()) || self.collision_aabb(pipe.bot_rectangle())
+    } else {
+      false
+    }
+  }
+
+  fn collision_aabb(&self, other: impl AABB) -> bool {
+    self.intersect(&other)
   }
 }
 
@@ -107,5 +97,23 @@ impl Bird {
 
   pub fn fit_distance(&self) -> f64 {
     self.fit_distance
+  }
+}
+
+impl AABB for Bird {
+  fn top(&self) -> f64 {
+    self.position.y + BIRD_OFFSET_Y
+  }
+
+  fn right(&self) -> f64 {
+    self.position.x + BIRD_OFFSET_X
+  }
+
+  fn bot(&self) -> f64 {
+    self.position.y - BIRD_OFFSET_Y
+  }
+
+  fn left(&self) -> f64 {
+    self.position.x - BIRD_OFFSET_X
   }
 }
