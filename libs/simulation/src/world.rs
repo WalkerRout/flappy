@@ -123,7 +123,7 @@ impl World {
   pub(crate) fn next_pipe(&self) -> Option<Pipe> {
     self.pipes
       .iter()
-      .filter(|pipe| pipe.position.x > BIRD_X) // Filter pipes with x > 0.15
+      .filter(|pipe| pipe.position.x > BIRD_X - PIPE_OFFSET_X) // Filter pipes with x > 0.15
       .min_by(|a, b| {
         a.position.x.partial_cmp(&b.position.x).unwrap_or(std::cmp::Ordering::Equal)
       })

@@ -83,8 +83,9 @@ impl Simulation {
   }
 
   pub fn train(&mut self, rng: &mut impl RngCore) {
+    let new_tick_count = self.tick_count + 10000;
     loop {
-      if self.step(rng) || self.tick_count >= 20000 {
+      if self.step(rng) || self.tick_count >= new_tick_count {
         return;
       }
     }

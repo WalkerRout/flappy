@@ -68,8 +68,9 @@ CanvasRenderingContext2D.prototype.drawPipe = function(x, y, offx, offy) {
 };
 
 trainButton.onclick = function() {
-  simulation.train();
-  updateGenerationCount();
+  if(simulation.train()) {
+    updateGenerationCount();
+  }
 }
 
 function sleepFor(sleepDuration){

@@ -96,8 +96,9 @@ impl Simulation {
     self.sim.step(&mut self.rng)
   }
 
-  pub fn train(&mut self) {
+  pub fn train(&mut self) -> bool {
     self.sim.train(&mut self.rng);
+    self.sim.tick_count() == 0
   }
 
   pub fn world(&self) -> JsValue {
