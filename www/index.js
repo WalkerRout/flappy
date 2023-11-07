@@ -42,9 +42,9 @@ function updateGenerationCount() {
 CanvasRenderingContext2D.prototype.drawBird = function(x, y, offx, offy) {
   this.fillRect(x - offx, y - offy, 2*offx, 2*offy);
   
-  this.lineWidth = 3;
-  this.strokeStyle = "purple";
-  this.strokeRect(x - offx, y - offy, 2*offx, 2*offy);
+  //this.lineWidth = 2;
+  //this.strokeStyle = "purple";
+  //this.strokeRect(x - offx, y - offy, 2*offx, 2*offy);
 };
 
 CanvasRenderingContext2D.prototype.drawPipe = function(x, y, offx, offy) {
@@ -55,14 +55,14 @@ CanvasRenderingContext2D.prototype.drawPipe = function(x, y, offx, offy) {
   // middle
   this.fillRect(x, y, 2, 2);
 
-  this.lineWidth = 10;
-  this.strokeStyle = "rgb(3, 88, 18)";
+  //this.lineWidth = 8;
+  //this.strokeStyle = "rgb(3, 88, 18)";
   // top
-  this.strokeRect(x - offx, 0, 2*offx, y - offy);
+  //this.strokeRect(x - offx, 0, 2*offx, y - offy);
   // bottom
-  this.strokeRect(x - offx, y + offy, 2*offx, viewportHeight);
+  //this.strokeRect(x - offx, y + offy, 2*offx, viewportHeight);
 
-  this.lineWidth = 3;
+  this.lineWidth = 2;
   this.strokeStyle = "rgb(178, 247, 242)";
   this.strokeRect(x - offx, y - offy, 2*offx, 2*offy);
 };

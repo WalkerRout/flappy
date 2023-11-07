@@ -6,7 +6,7 @@ use crate::*;
 pub const PIPE_DX: f64 = 0.0045;
 pub const PIPE_OFFSET_X: f64 = 0.044; // pipe/gap width = 2*PIPE_OFFSET_X
 pub const PIPE_OFFSET_Y: f64 = 0.13; // pipe gap height = 2*PIPE_OFFSET_Y
-pub const PIPE_TICK_GENERATION: usize = 160;
+pub const PIPE_TICK_GENERATION: usize = 140;
 
 #[derive(Debug, Clone)]
 pub struct Pipe {
