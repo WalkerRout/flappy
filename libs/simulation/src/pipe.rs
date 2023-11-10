@@ -47,7 +47,7 @@ impl Pipe {
     Rectangle { 
       position,
       width,
-      height
+      height,
     }
   }
 
@@ -59,7 +59,7 @@ impl Pipe {
     Rectangle { 
       position,
       width,
-      height
+      height,
     }
   }
 }

@@ -17,7 +17,7 @@ impl Eye {
       (target.y - PIPE_OFFSET_Y) - position.y,
       (target.y + PIPE_OFFSET_Y) - position.y,
       target.x - position.x,
-      dy
+      dy,
     ]
   }
 }

@@ -8,6 +8,7 @@ pub const BIRD_X: f64 = 0.15;
 pub const BIRD_OFFSET_X: f64 = 0.012;
 pub const BIRD_OFFSET_Y: f64 = 0.012;
 
+// potentially try to stick meta fields into a boxed inner structure that bird dereferences to
 #[derive(Debug, Clone)]
 pub struct Bird {
   pub position: na::Point2<f64>,
@@ -37,7 +38,7 @@ impl Bird {
   }
 
   pub(crate) fn from_chromosome(chromosome: ga::Chromosome, rng: &mut impl RngCore) -> Self {
-    let brain = Brain::from_chromosome(chromosome);
+    let brain = chromosome.into();
     Self::new(brain, rng)
   }
 

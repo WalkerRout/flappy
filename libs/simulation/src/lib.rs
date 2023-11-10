@@ -37,7 +37,7 @@ pub trait AABB {
 type GeneticAlgorithm = ga::GeneticAlgorithm<
   ga::RouletteWheelSelection, 
   ga::UniformCrossover, 
-  ga::GaussianMutation
+  ga::GaussianMutation,
 >;
 
 pub struct Simulation {

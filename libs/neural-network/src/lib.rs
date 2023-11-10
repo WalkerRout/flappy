@@ -49,20 +49,21 @@ impl Network {
     let activation      = |x: f64| x.max(0.0);
     let activation_last = |x: f64| 1.0 / (1.0 + (-x).exp());
 
-    last.propagate(
-      self.layers
-        .iter()
-        .take(layers-1)
-        .fold(inputs, |inputs, layer| {
-          layer.propagate(inputs)
-            .into_iter()
-            .map(activation)
-            .collect()
-        })
-    )
-    .into_iter()
-    .map(activation_last)
-    .collect()
+    last
+      .propagate(
+        self.layers
+          .iter()
+          .take(layers-1)
+          .fold(inputs, |inputs, layer| {
+            layer.propagate(inputs)
+              .into_iter()
+              .map(activation)
+              .collect()
+          })
+      )
+      .into_iter()
+      .map(activation_last)
+      .collect()
   }
 
   pub fn weights(&self) -> impl Iterator<Item = f64> + '_ {
@@ -76,7 +77,13 @@ impl Network {
 
 #[derive(Clone, Copy, Debug)]
 pub struct LayerArchitecture {
-  pub neurons: usize
+  pub neurons: usize,
+}
+
+impl From<usize> for LayerArchitecture {
+  fn from(neurons: usize) -> Self {
+    Self { neurons }
+  }
 }
 
 #[derive(Clone, Debug)]

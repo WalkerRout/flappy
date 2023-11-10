@@ -10,8 +10,6 @@ pub struct World {
   pub alive_birds: Vec<Bird>,
   pub dead_birds: Vec<Bird>,
   pub pipes: VecDeque<Pipe>,
-  // ahead_pipes: Vec<Pipe>, // spawn new pipes here,
-  // behind_pipes: Vec<Pipe>, // if pipe.x + xoffset < bird.x - radbird, move here
 }
 
 impl World {
@@ -77,7 +75,6 @@ impl World {
         !collision
       });
 
-    // Extend the dead_birds vector with collided birds
     self.dead_birds.extend(birds_to_move_to_dead);
   }
 
@@ -123,7 +120,7 @@ impl World {
   pub(crate) fn next_pipe(&self) -> Option<Pipe> {
     self.pipes
       .iter()
-      .filter(|pipe| pipe.position.x > BIRD_X - PIPE_OFFSET_X) // Filter pipes with x > 0.15
+      .filter(|pipe| pipe.position.x > BIRD_X - PIPE_OFFSET_X) // filter pipes past bird
       .min_by(|a, b| {
         a.position.x.partial_cmp(&b.position.x).unwrap_or(std::cmp::Ordering::Equal)
       })
