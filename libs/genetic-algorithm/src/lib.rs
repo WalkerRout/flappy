@@ -153,19 +153,15 @@ impl<S, C, M> GeneticAlgorithm<S, C, M>
     let new_pop = (0..population.len())
       .map(|_| {
         // selection
-        let parent_a = self
-          .selection_method
+        let parent_a = self.selection_method
           .select(rng, population)
           .as_ref();
-        let parent_b = self
-          .selection_method
+        let parent_b = self.selection_method
           .select(rng, population)
           .as_ref();
 
         // crossover
-        let mut child = self
-          .crossover_method
-          .crossover(rng, parent_a, parent_b);
+        let mut child = self.crossover_method.crossover(rng, parent_a, parent_b);
 
         // mutation
         self.mutation_method.mutate(rng, &mut child);

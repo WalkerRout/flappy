@@ -52,7 +52,7 @@ impl Simulation {
     let genetic_alg = GeneticAlgorithm::new(
       ga::RouletteWheelSelection::default(),
       ga::UniformCrossover::default(),
-      ga::GaussianMutation::new(0.015, 0.3),
+      ga::GaussianMutation::new(0.017, 0.3),
     );
 
     Self {

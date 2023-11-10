@@ -3,7 +3,7 @@ use crate::*;
 use std::iter;
 use std::collections::VecDeque;
 
-const POPULATION_COUNT: usize = 125;
+const POPULATION_COUNT: usize = 70;
 
 #[derive(Debug)]
 pub struct World {

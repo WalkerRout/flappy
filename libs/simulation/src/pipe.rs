@@ -6,7 +6,7 @@ use crate::*;
 pub const PIPE_DX: f64 = 0.0045;
 pub const PIPE_OFFSET_X: f64 = 0.044; // pipe/gap width = 2*PIPE_OFFSET_X
 pub const PIPE_OFFSET_Y: f64 = 0.13; // pipe gap height = 2*PIPE_OFFSET_Y
-pub const PIPE_TICK_GENERATION: usize = 140;
+pub const PIPE_TICK_GENERATION: usize = 120;
 
 #[derive(Debug, Clone)]
 pub struct Pipe {
@@ -24,7 +24,7 @@ pub struct Pipe {
 impl Pipe {
   pub(crate) fn random(rng: &mut impl RngCore) -> Self {
     let x = 1.0 + PIPE_OFFSET_X;
-    let y = clamp(rng.gen(), PIPE_OFFSET_Y, 1.0 - PIPE_OFFSET_Y);
+    let y = rng.gen::<f64>().max(PIPE_OFFSET_Y).min(1.0 - PIPE_OFFSET_Y);
 
     Self {
       position: na::Point2::new(x, y),
@@ -92,21 +92,4 @@ impl AABB for Rectangle {
   fn left(&self) -> f64 {
     self.position.x
   }
-}
-
-fn clamp(x: f64, min: f64, max: f64) -> f64 {
-  x.max(min).min(max)
-}
-
-#[test]
-fn test_pipe() {
-  let x = 0.9;
-  let y = 0.35;
-  let pipe = Pipe { position: na::Point2::new(x, y) };
-
-  assert_eq!(pipe.x, x);
-  assert_eq!(pipe.y, y);
-
-  assert_eq!(pipe.top(), (x, y + (1.0 - y) / 2.0, PIPE_OFFSET_X, (1.0 - y) / 2.0));
-  assert_eq!(pipe.bot(), ());
 }
