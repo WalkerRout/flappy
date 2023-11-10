@@ -69,27 +69,3 @@ impl Pipe {
     self.position
   }
 }
-
-pub struct Rectangle {
-  position: na::Point2<f64>, // bot left
-  width: f64,
-  height: f64,
-}
-
-impl AABB for Rectangle {
-  fn top(&self) -> f64 {
-    self.position.y + self.height
-  }
-
-  fn right(&self) -> f64 {
-    self.position.x + self.width
-  }
-
-  fn bot(&self) -> f64 {
-    self.position.y
-  }
-
-  fn left(&self) -> f64 {
-    self.position.x
-  }
-}

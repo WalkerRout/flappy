@@ -9,6 +9,7 @@ mod bird;
 mod pipe;
 mod brain;
 mod world;
+mod rectangle;
 mod bird_individual;
 
 pub use self::{
@@ -17,6 +18,7 @@ pub use self::{
   pipe::*,
   brain::*,
   world::*,
+  rectangle::*,
   bird_individual::*,
 };
 
@@ -26,7 +28,7 @@ pub trait AABB {
   fn bot(&self) -> f64;
   fn left(&self) -> f64;
 
-  fn intersect<O: AABB>(&self, other: &O) -> bool {
+  fn intersect(&self, other: &impl AABB) -> bool {
     self.left() < other.right()
       && self.right() > other.left()
       && self.bot() < other.top()
