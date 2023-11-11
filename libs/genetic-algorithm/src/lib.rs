@@ -50,7 +50,6 @@ impl UniformCrossover {
 impl CrossoverMethod for UniformCrossover {
   fn crossover(&self, rng: &mut impl RngCore, parent_a: &Chromosome, parent_b: &Chromosome) -> Chromosome {
     assert_eq!(parent_a.len(), parent_b.len());
-
     parent_a
       .iter()
       .zip(parent_b.iter())
@@ -90,7 +89,7 @@ impl MutationMethod for GaussianMutation {
 pub struct Statistics {
   min_fitness: f64,
   max_fitness: f64,
-  avg_fitness: f64
+  avg_fitness: f64,
 }
 
 impl Statistics {
@@ -135,22 +134,26 @@ impl Statistics {
 pub struct GeneticAlgorithm<S, C, M> {
   selection_method: S,
   crossover_method: C,
-  mutation_method: M
+  mutation_method: M,
 }
 
 impl<S, C, M> GeneticAlgorithm<S, C, M> 
   where S: SelectionMethod,
         C: CrossoverMethod,
-        M: MutationMethod {
+        M: MutationMethod, {
 
   pub fn new(selection_method: S, crossover_method: C, mutation_method: M) -> Self {
-    Self { selection_method, crossover_method, mutation_method }
+    Self { 
+      selection_method,
+      crossover_method,
+      mutation_method,
+    }
   }
 
   pub fn evolve<I: Individual>(&self, rng: &mut impl RngCore, population: &[I]) -> (Vec<I>, Statistics) {
     assert!(!population.is_empty());
 
-    let new_pop = (0..population.len())
+    let new_population = (0..population.len())
       .map(|_| {
         // selection
         let parent_a = self.selection_method
@@ -169,9 +172,26 @@ impl<S, C, M> GeneticAlgorithm<S, C, M>
         I::from(child)
       })
       .collect();
+
     let stats = Statistics::new(population);
     
-    (new_pop, stats)
+    (new_population, stats)
+  }
+}
+
+pub type DefaultGeneticAlgorithm = GeneticAlgorithm<
+  RouletteWheelSelection,
+  UniformCrossover,
+  GaussianMutation,
+>;
+
+impl Default for DefaultGeneticAlgorithm {
+  fn default() -> Self {
+    Self {
+      selection_method: RouletteWheelSelection::new(),
+      crossover_method: UniformCrossover::new(),
+      mutation_method: GaussianMutation::new(0.015, 0.3),
+    }
   }
 }
 
@@ -210,7 +230,7 @@ impl FromIterator<f64> for Chromosome {
 
 impl IntoIterator for Chromosome {
   type Item = f64;
-  type IntoIter = impl Iterator<Item = f64>;
+  type IntoIter = impl Iterator<Item = f64>; // #![feature(impl_trait_in_assoc_type)]
 
   fn into_iter(self) -> Self::IntoIter {
     self.genes.into_iter()

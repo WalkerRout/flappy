@@ -35,8 +35,8 @@ impl From<ga::Chromosome> for BirdIndividual {
   }
 }
 
-impl From<&Bird> for BirdIndividual {
-  fn from(bird: &Bird) -> Self {
+impl From<Bird> for BirdIndividual {
+  fn from(bird: Bird) -> Self {
     Self {
       fitness: bird.fit_distance,
       chromosome: bird.brain.chromosome(),

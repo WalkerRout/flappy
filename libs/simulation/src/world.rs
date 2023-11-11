@@ -1,5 +1,6 @@
 use crate::*;
 
+use std::mem;
 use std::iter;
 use std::collections::VecDeque;
 
@@ -43,15 +44,19 @@ impl World {
     self.pipe_movement(); // -x
   }
 
-  pub(crate) fn birds_as_individuals(&self) -> Vec<BirdIndividual> {
-    self.alive_birds
-      .iter()
-      .chain(self.dead_birds.iter())
+  pub(crate) fn birds_as_individuals(&mut self) -> Vec<BirdIndividual> {
+    // steal allocations
+    let alive = mem::take(&mut self.alive_birds);
+    let dead  = mem::take(&mut self.dead_birds);
+
+    alive
+      .into_iter()
+      .chain(dead.into_iter())
       .map(Into::into)
       .collect()
   }
 
-  pub(crate) fn individuals_as_birds(&mut self, population: Vec<BirdIndividual>, rng: &mut impl RngCore) -> Vec<Bird> {
+  pub(crate) fn individuals_as_birds(&self, population: Vec<BirdIndividual>, rng: &mut impl RngCore) -> Vec<Bird> {
     population
       .into_iter()
       .map(|bi| bi.into_bird(rng))
@@ -59,23 +64,11 @@ impl World {
   }
 
   fn bird_collision(&mut self) {
-    let mut birds_to_move_to_dead: Vec<Bird> = Vec::new();
     let closest_pipe = self.next_pipe();
+    let dead_birds = self.alive_birds
+      .extract_if(|bird| bird.collision(closest_pipe.as_ref())); // #![feature(extract_if)]
 
-    self.alive_birds
-      .retain(|bird| {
-        let collision = bird.collision(closest_pipe.as_ref());
-
-        if collision {
-          let mut new_bird = bird.clone();
-          new_bird.fit_distance /= 2.0;
-          birds_to_move_to_dead.push(new_bird);
-        }
-
-        !collision
-      });
-
-    self.dead_birds.extend(birds_to_move_to_dead);
+    self.dead_birds.extend(dead_birds);
   }
 
   fn bird_decision(&mut self, closest_pos: na::Point2<f64>) {

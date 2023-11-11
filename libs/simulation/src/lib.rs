@@ -1,3 +1,5 @@
+#![feature(extract_if)]
+
 use rand::RngCore;
 use nalgebra as na;
 
@@ -36,32 +38,20 @@ pub trait AABB {
   }
 }
 
-type GeneticAlgorithm = ga::GeneticAlgorithm<
-  ga::RouletteWheelSelection, 
-  ga::UniformCrossover, 
-  ga::GaussianMutation,
->;
-
 pub struct Simulation {
   world: World,
   tick_count: usize,
   generations: usize,
-  genetic_alg: GeneticAlgorithm,
+  genetic_alg: ga::DefaultGeneticAlgorithm,
 }
 
 impl Simulation {
   pub fn random(rng: &mut impl RngCore) -> Self {
-    let genetic_alg = GeneticAlgorithm::new(
-      ga::RouletteWheelSelection::default(),
-      ga::UniformCrossover::default(),
-      ga::GaussianMutation::new(0.017, 0.3),
-    );
-
     Self {
       world: World::random(rng),
       tick_count: 0,
       generations: 0,
-      genetic_alg,
+      genetic_alg: ga::DefaultGeneticAlgorithm::default(),
     }
   }
 
@@ -104,20 +94,21 @@ impl Simulation {
   }
 
   fn step_world(&mut self) {
-    // make movements
+    // sense and perceive environment
     self.world.decision();
+    // make movements
     self.world.movement();
   }
 
   fn evolve(&mut self, rng: &mut impl RngCore) {
     // prepare population
-    let curr_pop: Vec<BirdIndividual> = self.world.birds_as_individuals();
+    let current_population = self.world.birds_as_individuals();
 
     // evolve population
-    let (evo_pop, _) = self.genetic_alg.evolve(rng, &curr_pop);
+    let (evolved_population, _) = self.genetic_alg.evolve(rng, &current_population);
     
     // bring back population
-    self.world.alive_birds = self.world.individuals_as_birds(evo_pop, rng);
+    self.world.alive_birds = self.world.individuals_as_birds(evolved_population, rng);
 
     // reset environment
     self.reset();
