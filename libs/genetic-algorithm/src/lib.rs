@@ -150,7 +150,7 @@ impl<S, C, M> GeneticAlgorithm<S, C, M>
     }
   }
 
-  pub fn evolve<'a, I: Individual>(&'a self, rng: &'a mut impl RngCore, population: &'a [I]) -> (impl Iterator<Item=I> + '_, Statistics) {
+  pub fn evolve<'a, I: Individual>(&'a self, rng: &'a mut impl RngCore, population: &'a [I]) -> (impl Iterator<Item = I> + '_, Statistics) {
     assert!(!population.is_empty());
 
     let new_population = (0..population.len())

@@ -44,7 +44,7 @@ impl World {
     self.pipe_movement(); // -x
   }
 
-  pub(crate) fn birds_as_individuals(&mut self) -> impl Iterator<Item=BirdIndividual> + '_ {
+  pub(crate) fn birds_as_individuals(&mut self) -> impl Iterator<Item = BirdIndividual> + '_ {
     // steal allocations
     let alive = mem::take(&mut self.alive_birds);
     let dead  = mem::take(&mut self.dead_birds);
@@ -55,7 +55,7 @@ impl World {
       .map(Into::into)
   }
 
-  pub(crate) fn individuals_as_birds<'p>(&self, population: impl Iterator<Item=BirdIndividual> +'p, rng: &'p mut impl RngCore) -> impl Iterator<Item=Bird> + 'p {
+  pub(crate) fn individuals_as_birds<'p>(&self, population: impl Iterator<Item = BirdIndividual> +'p, rng: &'p mut impl RngCore) -> impl Iterator<Item = Bird> + 'p {
     population
       .map(|bi| bi.into_bird(rng))
   }
@@ -119,11 +119,11 @@ impl World {
 }
 
 impl World {
-  pub fn birds(&self) -> impl Iterator<Item=&'_ Bird> {
+  pub fn birds(&self) -> impl Iterator<Item = &'_ Bird> {
     self.alive_birds.iter()
   }
 
-  pub fn pipes(&self) -> impl Iterator<Item=&'_ Pipe> {
+  pub fn pipes(&self) -> impl Iterator<Item = &'_ Pipe> {
     self.pipes.iter()
   }
 }
