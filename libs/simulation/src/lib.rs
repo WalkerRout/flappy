@@ -108,7 +108,7 @@ impl Simulation {
     let (evolved_population, _) = self.genetic_alg.evolve(rng, &current_population);
     
     // bring back population
-    self.world.alive_birds = self.world.individuals_as_birds(evolved_population, rng);
+    self.world.alive_birds = self.world.individuals_as_birds(evolved_population.collect(), rng);
 
     // reset environment
     self.reset();

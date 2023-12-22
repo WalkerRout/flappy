@@ -51,7 +51,7 @@ impl World {
 
     alive
       .into_iter()
-      .chain(dead.into_iter())
+      .chain(dead)
       .map(Into::into)
       .collect()
   }
@@ -122,11 +122,11 @@ impl World {
 }
 
 impl World {
-  pub fn birds<'a>(&'a self) -> impl Iterator<Item=&'a Bird> {
+  pub fn birds(&self) -> impl Iterator<Item=&'_ Bird> {
     self.alive_birds.iter()
   }
 
-  pub fn pipes<'a>(&'a self) -> impl Iterator<Item=&'a Pipe> {
+  pub fn pipes(&self) -> impl Iterator<Item=&'_ Pipe> {
     self.pipes.iter()
   }
 }

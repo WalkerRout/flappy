@@ -71,7 +71,7 @@ impl Bird {
 
   fn collision_screen(&self) -> bool {
     let y = self.position.y;
-    y < BIRD_OFFSET_Y || y > 1.0 - BIRD_OFFSET_Y
+    !(BIRD_OFFSET_Y..=1.0 - BIRD_OFFSET_Y).contains(&y)
   }
 
   fn collision_pipe(&self, closest_pipe: Option<&Pipe>) -> bool {    

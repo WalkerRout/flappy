@@ -70,7 +70,7 @@ pub struct GaussianMutation {
 
 impl GaussianMutation {
   pub fn new(chance: f64, mag: f64) -> Self {
-    assert!(chance >= 0.0 && chance <= 1.0);
+    assert!((0.0..=1.0).contains(&chance));
     Self { chance, mag }
   }
 }
@@ -150,7 +150,7 @@ impl<S, C, M> GeneticAlgorithm<S, C, M>
     }
   }
 
-  pub fn evolve<I: Individual>(&self, rng: &mut impl RngCore, population: &[I]) -> (Vec<I>, Statistics) {
+  pub fn evolve<'a, I: Individual>(&'a self, rng: &'a mut impl RngCore, population: &'a [I]) -> (impl Iterator<Item=I> + '_, Statistics) {
     assert!(!population.is_empty());
 
     let new_population = (0..population.len())
@@ -170,8 +170,7 @@ impl<S, C, M> GeneticAlgorithm<S, C, M>
         self.mutation_method.mutate(rng, &mut child);
 
         I::from(child)
-      })
-      .collect();
+      });
 
     let stats = Statistics::new(population);
     

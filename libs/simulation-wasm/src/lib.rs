@@ -110,3 +110,9 @@ impl Simulation {
     JsValue::from_f64(self.sim.tick_count() as f64)
   }
 }
+
+impl Default for Simulation {
+  fn default() -> Self {
+    Self::new()
+  }
+}
