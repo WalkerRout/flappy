@@ -21,7 +21,7 @@ impl World {
 
     Self { 
       alive_birds,
-      dead_birds: Vec::with_capacity(POPULATION_COUNT),
+      dead_birds: Vec::new(),
       pipes: VecDeque::new(),
     }
   }
@@ -94,7 +94,7 @@ impl World {
       });
 
     self.pipes
-      .retain(|pipe| pipe.position.x > -PIPE_OFFSET_X);
+      .retain(|p| !p.collision());
   }
 
   fn pipe_movement(&mut self) {
