@@ -44,7 +44,7 @@ impl World {
     self.pipe_movement(); // -x
   }
 
-  pub(crate) fn birds_as_individuals(&mut self) -> Vec<BirdIndividual> {
+  pub(crate) fn birds_as_individuals(&mut self) -> impl Iterator<Item=BirdIndividual> + '_ {
     // steal allocations
     let alive = mem::take(&mut self.alive_birds);
     let dead  = mem::take(&mut self.dead_birds);
@@ -53,14 +53,11 @@ impl World {
       .into_iter()
       .chain(dead)
       .map(Into::into)
-      .collect()
   }
 
-  pub(crate) fn individuals_as_birds(&self, population: Vec<BirdIndividual>, rng: &mut impl RngCore) -> Vec<Bird> {
+  pub(crate) fn individuals_as_birds<'p>(&self, population: impl Iterator<Item=BirdIndividual> +'p, rng: &'p mut impl RngCore) -> impl Iterator<Item=Bird> + 'p {
     population
-      .into_iter()
       .map(|bi| bi.into_bird(rng))
-      .collect()
   }
 
   fn bird_collision(&mut self) {

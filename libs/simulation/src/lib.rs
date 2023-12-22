@@ -102,13 +102,14 @@ impl Simulation {
 
   fn evolve(&mut self, rng: &mut impl RngCore) {
     // prepare population
-    let current_population = self.world.birds_as_individuals();
+    let current_population: Vec<_> = self.world.birds_as_individuals().collect();
 
     // evolve population
     let (evolved_population, _) = self.genetic_alg.evolve(rng, &current_population);
-    
+    let collected: Vec<_> = evolved_population.collect();
+
     // bring back population
-    self.world.alive_birds = self.world.individuals_as_birds(evolved_population.collect(), rng);
+    self.world.alive_birds = self.world.individuals_as_birds(collected.into_iter(), rng).collect();
 
     // reset environment
     self.reset();
