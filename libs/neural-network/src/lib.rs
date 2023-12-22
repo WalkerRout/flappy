@@ -49,18 +49,18 @@ impl Network {
     let activation      = |x: f64| x.max(0.0);
     let activation_last = |x: f64| 1.0 / (1.0 + (-x).exp());
 
+    let hidden_output = self.layers
+      .iter()
+      .take(layers-1)
+      .fold(inputs, |inputs, layer| {
+        layer.propagate(inputs)
+          .into_iter()
+          .map(activation)
+          .collect()
+      });
+      
     last
-      .propagate(
-        self.layers
-          .iter()
-          .take(layers-1)
-          .fold(inputs, |inputs, layer| {
-            layer.propagate(inputs)
-              .into_iter()
-              .map(activation)
-              .collect()
-          })
-      )
+      .propagate(hidden_output)
       .into_iter()
       .map(activation_last)
       .collect()
